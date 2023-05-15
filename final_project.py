@@ -10,26 +10,29 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+#       App frame
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1000, 550)
+        MainWindow.resize(1200, 750)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.centralwidget.setStyleSheet("background-color:lightgrey;")
+        self.centralwidget.setStyleSheet("background-color:#444444;")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
 
+#       Drawing frame
         self.splitter_fig = QtWidgets.QSplitter(self.centralwidget)
         self.splitter_fig.setFrameShape(QtWidgets.QFrame.WinPanel)
         self.splitter_fig.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.splitter_fig.setOrientation(QtCore.Qt.Vertical)
         self.splitter_fig.setObjectName("splitter_fig")
-        self.splitter_fig.setStyleSheet(" background-image: url(); background-color: black;")
+        self.splitter_fig.setStyleSheet(" background-image: url(); background-color: white; border-style: solid; border-width: 3px; border-radius: 5px; border-color: black; padding: 10px; margin-bottom: 30px; ")
         self.gridLayout.addWidget(self.splitter_fig,0,0,3,9)
         self.fig,self.ax = plt.subplots(figsize=(15, 5))
         self.ax.set(title='Ball Movement')
         self.projectile_fig = FigureCanvasQTAgg(self.fig)
         self.splitter_fig.addWidget(self.projectile_fig)
 
+#       Distance Dial
         self.dial_distance = QtWidgets.QDial(self.centralwidget)
         self.dial_distance.setGeometry(QtCore.QRect(10, 10, 91, 101))
         self.dial_distance.setObjectName("dial_distance")
@@ -37,8 +40,9 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.dial_distance,3,0,3,3)
         self.dial_distance.valueChanged.connect(lambda: self.distanceChange())
         self.dial_distance.setNotchesVisible(True)
-        self.dial_distance.setStyleSheet("background-color:black; color:#BA4A00;")
+        self.dial_distance.setStyleSheet("background-color:#450101; color:#BA4A00;")
 
+#       Angle Dial
         self.dial_angle = QtWidgets.QDial(self.centralwidget)
         self.dial_angle.setGeometry(QtCore.QRect(130, 10, 91, 101))
         self.dial_angle.setObjectName("dial_angle")
@@ -46,8 +50,9 @@ class Ui_MainWindow(object):
         self.dial_angle.setMaximum(9900)
         self.dial_angle.valueChanged.connect(lambda: self.angleChange())
         self.dial_angle.setNotchesVisible(True)
-        self.dial_angle.setStyleSheet("background-color:black; color: #BA4A00;")
+        self.dial_angle.setStyleSheet("background-color:#450101; color: #BA4A00;")
 
+#       Velocity Dial
         self.dial_velocity = QtWidgets.QDial(self.centralwidget)
         self.dial_velocity.setGeometry(QtCore.QRect(250, 10, 91, 101))
         self.dial_velocity.setObjectName("dial_velocity")
@@ -55,49 +60,49 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.dial_velocity,3,6,3,3)
         self.dial_velocity.valueChanged.connect(lambda: self.velocityChange())
         self.dial_velocity.setNotchesVisible(True)
-        self.dial_velocity.setStyleSheet("background-color:black; color: #BA4A00;")
+        self.dial_velocity.setStyleSheet("background-color:#450101; color: #BA4A00;")
 
+#       Distance label
         self.label_distance = QtWidgets.QLabel(self.centralwidget)
         self.label_distance.setGeometry(QtCore.QRect(20, 110, 51, 16))
         self.label_distance.setObjectName("label_distance")
-        self.gridLayout.addWidget(self.label_distance,6,0,1,3)
-        self.label_distance.setStyleSheet("background-image: url();border-style: outset; border-width: 2px;border-radius: 10px;border-color: black;font: bold 14px;color: white;"
-                                               " min-width: 10em;padding: 6px;")
+        self.gridLayout.addWidget(self.label_distance,6,1,1,1)
+        self.label_distance.setStyleSheet("background-color: #bc5656; border-style: solid; border-color: black; border-width: 1px; border-radius: 10px; font: 16px; color: white; min-width: 8em; padding: 6px;")
 
+#       Angle label
         self.label_angle = QtWidgets.QLabel(self.centralwidget)
         self.label_angle.setGeometry(QtCore.QRect(140, 110, 47, 13))
         self.label_angle.setObjectName("label_angle")
-        self.label_angle.setStyleSheet("background-image: url();border-style: outset; border-width: 2px;border-radius: 10px;border-color: black;font: bold 14px;color: white;"
-                                               " min-width: 10em;padding: 6px;")
-        self.gridLayout.addWidget(self.label_angle,6,3,1,3)
+        self.label_angle.setStyleSheet("background-color: #bc5656; border-style: solid; border-color: black; border-width: 1px; border-radius: 10px; font: 16px; color: white; min-width: 8em; padding: 6px;")
+        self.gridLayout.addWidget(self.label_angle,6,4,1,1)
 
+#       Velocity label
         self.label_velocity = QtWidgets.QLabel(self.centralwidget)
         self.label_velocity.setGeometry(QtCore.QRect(260, 110, 47, 13))
         self.label_velocity.setObjectName("label_velocity")
-        self.label_velocity.setStyleSheet("background-image: url();border-style: outset; border-width: 2px;border-radius: 10px;border-color: black;font: bold 14px;color: white;"
-                                               " min-width: 10em;padding: 6px;")
+        self.label_velocity.setStyleSheet("background-color: #bc5656; border-style: solid; border-color: black; border-width: 1px; border-radius: 10px; font: 16px; color: white; min-width: 8em; padding: 6px;")
         
-        self.gridLayout.addWidget(self.label_velocity,6,6,1,3)
+        self.gridLayout.addWidget(self.label_velocity,6,7,1,1)
 
+#       Calculate Button
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(10, 140, 321, 23))
         self.pushButton.setObjectName("pushButton")
-        self.gridLayout.addWidget(self.pushButton,7,0,1,9)
+        self.gridLayout.addWidget(self.pushButton,7,4,1,1)
         self.pushButton.clicked.connect(lambda: self.calculate())
-        self.pushButton.setStyleSheet("font: bold 30px; color: white; background-color: black; ")
+        self.pushButton.setStyleSheet("")
+        self.pushButton.setStyleSheet("QPushButton{""font: bold 20px; color: white; background-color: #0e1013; border-style: solid; border-width: 0px; border-radius: 12px; border-color: black; margin: 15px 10px 0px 10px; padding-bottom: 0.5em; padding-top: 0.5em;""} QPushButton::hover{""font: bold 18px;""}")
+        self.pushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
-        self.label_Max_Height_Reached = QtWidgets.QLabel(self.centralwidget)
-        self.label_Max_Height_Reached.setGeometry(QtCore.QRect(20, 180, 301, 16))
-        self.label_Max_Height_Reached.setObjectName("label_Max_Height_Reached")
-        self.gridLayout.addWidget(self.label_Max_Height_Reached,8,0,1,9)
-        self.label_Max_Height_Reached.setStyleSheet("font: bold 14px;color: white;")
+#       results
+        self.label_results = QtWidgets.QLabel(self.centralwidget)
+        self.label_results.setGeometry(QtCore.QRect(20, 200, 301, 16))
+        self.label_results.setObjectName("label_results")
+        self.gridLayout.addWidget(self.label_results,9,3,1,3)
+        self.label_results.setStyleSheet("font: bold 18px; color: black; background-color: white; border-style: solid; border-width: 2px; border-radius: 8px; border-color: black; padding: 0.5em; margin-top: 20px")
 
-        self.label_Goal_Height = QtWidgets.QLabel(self.centralwidget)
-        self.label_Goal_Height.setGeometry(QtCore.QRect(20, 200, 301, 16))
-        self.label_Goal_Height.setObjectName("label_Goal_Height")
-        self.gridLayout.addWidget(self.label_Goal_Height,9,0,1,9)
-        self.label_Goal_Height.setStyleSheet("font: bold 14px;color: white;")
 
+#       Calculations
         self.Goal_Height = 0
         self.angle = 0
         self.Initial_Velocity = 0
@@ -125,9 +130,9 @@ class Ui_MainWindow(object):
         self.label_angle.setText(_translate("MainWindow", "Angle: "))
 
         self.pushButton.setText(_translate("MainWindow", "Calculate "))
-        self.label_Max_Height_Reached.setText(_translate("MainWindow", "Maximum Height Reached = 0 m"))
-        self.label_Goal_Height.setText(_translate("MainWindow", "Height of ball at goal plane = 0 m"))
+        self.label_results.setText(_translate("MainWindow", "Maximum Height Reached = 0 m\n\nHeight of ball at goal plane = 0 m"))
 
+#   Functions
     def distanceChange (self):
         self.Goal_Height = self.dial_distance.value()/100.0
         self.label_distance.setText(f'Distance: {str(self.Goal_Height)}')
@@ -146,7 +151,7 @@ class Ui_MainWindow(object):
         Initial_Angle = self.angle * math.pi / 180
         Initial_Velocity = self.Initial_Velocity
         if(Initial_Velocity == 0):
-            self.label_Goal_Height.setText(f"Ball does not move because its initial velocity was zero")
+            self.label_results.setText(f"Ball does not move because its initial velocity was zero")
             return 
         Time = (Initial_Velocity * math.sin(Initial_Angle)) / 9.8
         Max_Height_Reached = Initial_Velocity * math.sin(Initial_Angle) * Time  - 0.5 * 9.8 * Time ** 2
@@ -156,12 +161,11 @@ class Ui_MainWindow(object):
         Time_last_half = Distance_remained / (Initial_Velocity * math.cos(Initial_Angle))
         Goal_Height = Max_Height_Reached - (0.5 * 9.8 * Time_last_half ** 2) 
 
-        self.label_Max_Height_Reached.setText(f"Maximum Height Reached = {Max_Height_Reached} m")
         if (Goal_Height < 0):{
-        self.label_Goal_Height.setText(f"Ball does not reach the goal plane")
+        self.label_results.setText(f"Maximum Height Reached = {Max_Height_Reached} m\n\nBall does not reach the goal plane")
         }
         else:{
-        self.label_Goal_Height.setText(f"Ball hight at the goal plane arrival point = {Goal_Height} m")
+        self.label_results.setText(f"Maximum Height Reached = {Max_Height_Reached} m\n\nBall hight at the goal plane arrival point = {Goal_Height} m")
         }
         self.goalheight=Goal_Height
         self.T1 = Time
@@ -170,7 +174,7 @@ class Ui_MainWindow(object):
 
 
     def Draw(self):
-        
+
         Goal_Height = self.Goal_Height
         Initial_Velocity = self.Initial_Velocity
         Initial_Angle = self.angle
@@ -195,7 +199,6 @@ class Ui_MainWindow(object):
 
         self.ax.set_xlim(left=0)
         self.ax.set_ylim(bottom=0)
-
 
         self.ax.legend(bbox_to_anchor=(1.0, 1), loc='upper left')
         self.projectile_fig.draw()
