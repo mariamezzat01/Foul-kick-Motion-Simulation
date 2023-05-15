@@ -172,27 +172,26 @@ class Ui_MainWindow(object):
         Initial_Angle = self.angle
         T1 = self.T1
         T2 = self.T2
-        Goal_Height=self.goalheight
-        if(Goal_Height<0):
-            self.ax.cla()
 
-            self.ax.axvline(x=Distance_Ball_to_Goal, color='g', linestyle='-.', label='Goal')
-        else:
 
-            Time = np.linspace(0, T1, 100)
-            Time2 = np.linspace(0, T2, 100)
-            RisingX = Initial_Velocity * T1 * np.cos(np.radians(Initial_Angle))
-            MaxHeight = Initial_Velocity * T1 * np.sin(np.radians(Initial_Angle)) - 0.5 * 9.8 * T1 ** 2
-            x1 = Initial_Velocity * Time * np.cos(np.radians(Initial_Angle))
-            y1 = Initial_Velocity * Time * np.sin(np.radians(Initial_Angle)) - 0.5 * 9.8 * Time ** 2
-            x2 = RisingX + Initial_Velocity * Time2 * np.cos(np.radians(Initial_Angle))
-            y2 = MaxHeight - 0.5 * 9.8 * Time2 * Time2
-            self.ax.cla()
-            self.ax.set(title='Projectile Track')
-            self.ax.plot(x1, y1, color='g', label="Rising Ball ")
-            self.ax.plot(x2, y2, color='r', label="path after Goal Line ")
-            self.ax.axvline(x=Distance_Ball_to_Goal, color='g', linestyle='--', label='Goal')
-            self.ax.plot(RisingX, MaxHeight, marker='o', label="Max Ball Height")
+        Time = np.linspace(0, T1, 100)
+        Time2 = np.linspace(0, T2, 100)
+        RisingX = Initial_Velocity * T1 * np.cos(np.radians(Initial_Angle))
+        MaxHeight = Initial_Velocity * T1 * np.sin(np.radians(Initial_Angle)) - 0.5 * 9.8 * T1 ** 2
+        x1 = Initial_Velocity * Time * np.cos(np.radians(Initial_Angle))
+        y1 = Initial_Velocity * Time * np.sin(np.radians(Initial_Angle)) - 0.5 * 9.8 * Time ** 2
+        x2 = RisingX + Initial_Velocity * Time2 * np.cos(np.radians(Initial_Angle))
+        y2 = MaxHeight - 0.5 * 9.8 * Time2 * Time2
+        self.ax.cla()
+        self.ax.set(title='Projectile Track')
+        self.ax.plot(x1, y1, color='g', label="Rising Ball ")
+        self.ax.plot(x2, y2, color='r', label="path after Goal Line ")
+        self.ax.axvline(x=Distance_Ball_to_Goal, color='g', linestyle='--', label='Goal')
+        self.ax.plot(RisingX, MaxHeight, marker='o', label="Max Ball Height")
+
+        self.ax.set_xlim(left=0)
+        self.ax.set_ylim(bottom=0)
+
 
         self.ax.legend(bbox_to_anchor=(1.0, 1), loc='upper left')
         self.projectile_fig.draw()
