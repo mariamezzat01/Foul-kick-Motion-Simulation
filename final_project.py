@@ -98,7 +98,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.label_Goal_Height,9,0,1,9)
         self.label_Goal_Height.setStyleSheet("font: bold 14px;color: white;")
 
-        self.Distance_Ball_to_Goal = 0
+        self.Goal_Height = 0
         self.angle = 0
         self.Initial_Velocity = 0
         self.T1 = 0
@@ -129,8 +129,8 @@ class Ui_MainWindow(object):
         self.label_Goal_Height.setText(_translate("MainWindow", "Height of ball at goal plane = 0 m"))
 
     def distanceChange (self):
-        self.Distance_Ball_to_Goal = self.dial_distance.value()/100.0
-        self.label_distance.setText(f'Distance: {str(self.Distance_Ball_to_Goal)}')
+        self.Goal_Height = self.dial_distance.value()/100.0
+        self.label_distance.setText(f'Distance: {str(self.Goal_Height)}')
 
     def angleChange(self):
         self.angle = self.dial_angle.value()/100.0
@@ -141,15 +141,18 @@ class Ui_MainWindow(object):
         self.label_velocity.setText(f'Velocity: {str(self.Initial_Velocity)}')
 
     def calculate(self):
-        Distance_Ball_to_Goal = self.Distance_Ball_to_Goal
+        Goal_Height = self.Goal_Height
         # in radians
         Initial_Angle = self.angle * math.pi / 180
         Initial_Velocity = self.Initial_Velocity
+        if(Initial_Velocity == 0):
+            self.label_Goal_Height.setText(f"Ball does not move because its initial velocity was zero")
+            return 
         Time = (Initial_Velocity * math.sin(Initial_Angle)) / 9.8
         Max_Height_Reached = Initial_Velocity * math.sin(Initial_Angle) * Time  - 0.5 * 9.8 * Time ** 2
 
         Half_distance = Initial_Velocity * math.cos(Initial_Angle) * Time
-        Distance_remained = Distance_Ball_to_Goal - Half_distance
+        Distance_remained = Goal_Height - Half_distance
         Time_last_half = Distance_remained / (Initial_Velocity * math.cos(Initial_Angle))
         Goal_Height = Max_Height_Reached - (0.5 * 9.8 * Time_last_half ** 2) 
 
@@ -167,12 +170,12 @@ class Ui_MainWindow(object):
 
 
     def Draw(self):
-        Distance_Ball_to_Goal = self.Distance_Ball_to_Goal
+        
+        Goal_Height = self.Goal_Height
         Initial_Velocity = self.Initial_Velocity
         Initial_Angle = self.angle
         T1 = self.T1
         T2 = self.T2
-
 
         Time = np.linspace(0, T1, 100)
         Time2 = np.linspace(0, T2, 100)
@@ -181,13 +184,14 @@ class Ui_MainWindow(object):
         x1 = Initial_Velocity * Time * np.cos(np.radians(Initial_Angle))
         y1 = Initial_Velocity * Time * np.sin(np.radians(Initial_Angle)) - 0.5 * 9.8 * Time ** 2
         x2 = RisingX + Initial_Velocity * Time2 * np.cos(np.radians(Initial_Angle))
-        y2 = MaxHeight - 0.5 * 9.8 * Time2 * Time2
+        y2 = MaxHeight - 0.5 * 9.8 * Time2 ** 2
+
         self.ax.cla()
-        self.ax.set(title='Projectile Track')
+        self.ax.set(title='Ball Movement')
+        self.ax.plot(x2, y2, color='r', label="Falling Path ")
+        self.ax.axvline(x=Goal_Height, linestyle='--', label='Goal')
+        self.ax.plot(RisingX, MaxHeight, color='b', marker='o', label="Max Ball Height")
         self.ax.plot(x1, y1, color='g', label="Rising Ball ")
-        self.ax.plot(x2, y2, color='r', label="path after Goal Line ")
-        self.ax.axvline(x=Distance_Ball_to_Goal, color='g', linestyle='--', label='Goal')
-        self.ax.plot(RisingX, MaxHeight, marker='o', label="Max Ball Height")
 
         self.ax.set_xlim(left=0)
         self.ax.set_ylim(bottom=0)
