@@ -152,6 +152,9 @@ class Ui_MainWindow(object):
         Initial_Velocity = self.Initial_Velocity
         if(Initial_Velocity == 0):
             self.label_results.setText(f"Ball does not move because its initial velocity was zero")
+            self.ax.clear()
+            self.ax.set(title='Ball Movement')
+            self.projectile_fig.draw()
             return 
         Time = (Initial_Velocity * math.sin(Initial_Angle)) / 9.8
         Max_Height_Reached = Initial_Velocity * math.sin(Initial_Angle) * Time  - 0.5 * 9.8 * Time ** 2
