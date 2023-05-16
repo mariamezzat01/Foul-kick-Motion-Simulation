@@ -2,9 +2,9 @@
 
 Simuation of soccer ball kick that takes the initial velocity, angle and distance from the goal as inputs and displays:
 
-1- if ball reached the goal
-2- distance above the goal if reached
-3- Maximum height acheived by the ball
+1. if ball reached the goal
+2. distance above the goal if reached
+3. Maximum height acheived by the ball
 
 ## Demo
 
@@ -16,9 +16,9 @@ Simuation of soccer ball kick that takes the initial velocity, angle and distanc
 
 ## Team Members
 
-1- Mariam Mohamed Ezzat
-2- Micheal Hany
-3- Maye Khaled
-4- Mohamed Mustafa
-5- Maha Medhat
+1. Mariam Mohamed Ezzat
+2. Micheal Hany
+3. Maye Khaled
+4. Mohamed Mustafa
+5. Maha Medhat
 
