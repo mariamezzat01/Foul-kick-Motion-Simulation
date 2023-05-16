@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 import math
 from scipy.stats import norm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.animation import FuncAnimation
 
 
 
@@ -90,7 +91,6 @@ class Ui_MainWindow(object):
         self.pushButton.setObjectName("pushButton")
         self.gridLayout.addWidget(self.pushButton,7,4,1,1)
         self.pushButton.clicked.connect(lambda: self.calculate())
-        self.pushButton.setStyleSheet("")
         self.pushButton.setStyleSheet("QPushButton{""font: bold 20px; color: white; background-color: #0e1013; border-style: solid; border-width: 0px; border-radius: 12px; border-color: black; margin: 15px 10px 0px 10px; padding-bottom: 0.5em; padding-top: 0.5em;""} QPushButton::hover{""font: bold 18px;""}")
         self.pushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
@@ -103,7 +103,7 @@ class Ui_MainWindow(object):
 
 
 #       Calculations
-        self.Goal_Height = 0
+        self.distance_from_goal = 0
         self.angle = 0
         self.Initial_Velocity = 0
         self.T1 = 0
@@ -134,8 +134,8 @@ class Ui_MainWindow(object):
 
 #   Functions
     def distanceChange (self):
-        self.Goal_Height = self.dial_distance.value()/100.0
-        self.label_distance.setText(f'Distance: {str(self.Goal_Height)}')
+        self.distance_from_goal = self.dial_distance.value()/100.0
+        self.label_distance.setText(f'Distance: {str(self.distance_from_goal)}')
 
     def angleChange(self):
         self.angle = self.dial_angle.value()/100.0
@@ -146,59 +146,72 @@ class Ui_MainWindow(object):
         self.label_velocity.setText(f'Velocity: {str(self.Initial_Velocity)}')
 
     def calculate(self):
-        Goal_Height = self.Goal_Height
+        distance_from_goal = self.distance_from_goal
         # in radians
         Initial_Angle = self.angle * math.pi / 180
         Initial_Velocity = self.Initial_Velocity
+
         if(Initial_Velocity == 0):
-            self.label_results.setText(f"Ball does not move because its initial velocity was zero")
-            self.ax.clear()
-            self.ax.set(title='Ball Movement')
-            self.projectile_fig.draw()
-            return 
+                self.label_results.setText(f"Ball does not move because its initial velocity was zero")
+                self.ax.clear()
+                self.ax.set(title='Ball Movement')
+                self.projectile_fig.draw()
+                return 
+        # variables of first half 
         Time = (Initial_Velocity * math.sin(Initial_Angle)) / 9.8
         Max_Height_Reached = Initial_Velocity * math.sin(Initial_Angle) * Time  - 0.5 * 9.8 * Time ** 2
-
         Half_distance = Initial_Velocity * math.cos(Initial_Angle) * Time
-        Distance_remained = Goal_Height - Half_distance
+        # variables of second half 
+        Distance_remained = distance_from_goal - Half_distance
         Time_last_half = Distance_remained / (Initial_Velocity * math.cos(Initial_Angle))
-        Goal_Height = Max_Height_Reached - (0.5 * 9.8 * Time_last_half ** 2) 
+        Height_At_Goal = Max_Height_Reached - (0.5 * 9.8 * Time_last_half ** 2) 
 
-        if (Goal_Height < 0):{
+        if (Height_At_Goal < 0):{
         self.label_results.setText(f"Maximum Height Reached = {Max_Height_Reached} m\n\nBall does not reach the goal plane")
         }
         else:{
-        self.label_results.setText(f"Maximum Height Reached = {Max_Height_Reached} m\n\nBall hight at the goal plane arrival point = {Goal_Height} m")
+        self.label_results.setText(f"Maximum Height Reached = {Max_Height_Reached} m\n\nBall hight at the goal plane arrival point = {Height_At_Goal} m")
         }
-        self.goalheight=Goal_Height
+            
+
+        self.goalheight = Height_At_Goal
         self.T1 = Time
-        self.T2 = Time_last_half
+        self.T2 = Time_last_half + Time
         self.Draw()
 
 
     def Draw(self):
 
-        Goal_Height = self.Goal_Height
+        distance_from_goal = self.distance_from_goal
         Initial_Velocity = self.Initial_Velocity
         Initial_Angle = self.angle
+        # time covered in first half
         T1 = self.T1
+        # time covered in the journey
         T2 = self.T2
+        Height_At_Goal=self.goalheight
 
-        Time = np.linspace(0, T1, 100)
+        if(Height_At_Goal<0):
+            self.ax.cla()
+
         Time2 = np.linspace(0, T2, 100)
-        RisingX = Initial_Velocity * T1 * np.cos(np.radians(Initial_Angle))
+        
         MaxHeight = Initial_Velocity * T1 * np.sin(np.radians(Initial_Angle)) - 0.5 * 9.8 * T1 ** 2
-        x1 = Initial_Velocity * Time * np.cos(np.radians(Initial_Angle))
-        y1 = Initial_Velocity * Time * np.sin(np.radians(Initial_Angle)) - 0.5 * 9.8 * Time ** 2
-        x2 = RisingX + Initial_Velocity * Time2 * np.cos(np.radians(Initial_Angle))
-        y2 = MaxHeight - 0.5 * 9.8 * Time2 ** 2
+        
+
+        x2 = Initial_Velocity * Time2 * np.cos(np.radians(Initial_Angle))
+        y2 = Initial_Velocity * Time2 * np.sin(np.radians(Initial_Angle)) - 0.5 * 9.8 * Time2 ** 2
+
 
         self.ax.cla()
         self.ax.set(title='Ball Movement')
-        self.ax.plot(x2, y2, color='r', label="Falling Path ")
-        self.ax.axvline(x=Goal_Height, linestyle='--', label='Goal')
-        self.ax.plot(RisingX, MaxHeight, color='b', marker='o', label="Max Ball Height")
-        self.ax.plot(x1, y1, color='g', label="Rising Ball ")
+        
+        animate3, = self.ax.plot(x2, y2, color='b', label="Ball Track")
+        anim3 = FuncAnimation(self.fig, lambda i: animate3.set_data(x2[:i], y2[:i]), frames=100, interval=30, repeat=False)
+
+        self.ax.axvline(x=distance_from_goal , linestyle='--', label='Goal')
+        self.ax.axhline(y=MaxHeight , color='r', linestyle='-.', label="Max Ball Height")
+
 
         self.ax.set_xlim(left=0)
         self.ax.set_ylim(bottom=0)
